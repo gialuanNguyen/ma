@@ -28,11 +28,10 @@ public class Exercise3 {
 
 	public void Startbutton() {
 		driver.get("https://kyna.vn/");
-		driver.findElement(By.xpath("//div[@id='cs-live-chat']")).click();
-		sleepInSecond(3);
 		WebElement iframeFB = driver.findElement(By.xpath("//div[@id='cs-live-chat']//iframe"));
 		driver.switchTo().frame(iframeFB);
 		sleepInSecond(3);
+		driver.findElement(By.xpath("//div[@class='border_overlay meshim_widget_widgets_BorderOverlay']")).click();
 		driver.findElement(By.xpath("//input[@ng-model='login.username']")).sendKeys("John Wick");
 
 		driver.findElement(By.xpath("//input[@ng-model='login.phone']")).sendKeys("0909444555");
