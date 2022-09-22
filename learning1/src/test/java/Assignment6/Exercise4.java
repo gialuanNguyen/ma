@@ -1,12 +1,16 @@
 package Assignment6;
 
+import static org.testng.Assert.assertEquals;
+
 import java.util.Set;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -32,15 +36,28 @@ public class Exercise4 {
 	public void Startbutton() {
 		driver.get("http://live.techpanda.org/");
 		driver.findElement(By.xpath("//a[@class='level0 ']")).click();
-		driver.findElement(
-				By.xpath("//a[@title='Sony Xperia']/parent::h2/following-sibling::div[@class='actions']/child::ul//a[@class='link-compare']"))
+		driver.findElement(By.xpath(
+				"//a[@title='Sony Xperia']/parent::h2/following-sibling::div[@class='actions']/child::ul//a[@class='link-compare']"))
 				.click();
 		sleepInSecond(3);
 		driver.findElement(By.xpath(
 				"//a[@title='Samsung Galaxy']/parent::h2/following-sibling::div[@class='actions']/child::ul//a[@class='link-compare']"))
 				.click();
-		sleepInSecond(3);
+		String parentID = driver.getWindowHandle();
 		driver.findElement(By.xpath("//span[text()='Compare']")).click();
+		switchToWindowByID(parentID);
+		sleepInSecond(3);
+		String loginPageUrl = driver.getTitle();
+		Assert.assertEquals(loginPageUrl, "Products Comparison List - Magento Commerce");
+		driver.close();
+		driver.switchTo().window(parentID);
+		driver.findElement(By.xpath("//a[text()='Clear All']")).click();
+		
+		Alert yes = driver.switchTo().alert();
+		yes.accept();
+		Assert.assertEquals(driver.findElement(By.xpath("//li[@class='success-msg']")).getText(),"The comparison list was cleared.");
+		
+		
 	}
 
 	public void sleepInSecond(long timeout) {
@@ -51,7 +68,14 @@ public class Exercise4 {
 			e.printStackTrace();
 		}
 	}
+
 	public void switchToWindowByID(String parentID) {
-		Set<String> allWindows= driver.getWindowHandles();
+		Set<String> allWindows = driver.getWindowHandles();
+		for (String runWindow : allWindows) {
+			if (!runWindow.equals(parentID)) {
+				driver.switchTo().window(runWindow);
+				break;
+			}
+		}
 	}
 }
